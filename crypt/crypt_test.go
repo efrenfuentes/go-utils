@@ -15,4 +15,11 @@ var _ = Describe("Crypt", func() {
 			Expect(Crypt("testtest", "es")).To(Equal("esDRYJnY4VaGM"))
 		})
 	})
+	Describe("CryptPure function", func() {
+		It("encrypt some passwords", func() {
+			Expect(CryptPure("abcdefg", "aa")).To(Equal("aaTcvO819w3js"))
+			Expect(CryptPure("1234567", "00")).To(Equal("00eD1Q7PHZ7O."))
+			Expect(CryptPure("testtest", "es")).To(Equal("esDRYJnY4VaGM"))
+		})
+	})
 })
