@@ -32,10 +32,10 @@ var _ = Describe("Keypair", func() {
 			block, _ = pem.Decode([]byte(privateKey))
 
 			privKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
-			Expect(err).Should(BeNil())
+			Expect(err).To(BeNil())
 
 			err = privKey.Validate()
-			Expect(err).Should(BeNil())
+			Expect(err).To(BeNil())
 
 			// public key
 			pub := privKey.PublicKey
