@@ -7,27 +7,27 @@ import (
 	"bytes"
 )
 
-var PC1_C = []byte{
+var pc1C = []byte{
 	57, 49, 41, 33, 25, 17, 9,
 	1, 58, 50, 42, 34, 26, 18,
 	10, 2, 59, 51, 43, 35, 27,
 	19, 11, 3, 60, 52, 44, 36,
 }
 
-var PC1_D = []byte{
+var pc1D = []byte{
 	63, 55, 47, 39, 31, 23, 15,
 	7, 62, 54, 46, 38, 30, 22,
 	14, 6, 61, 53, 45, 37, 29,
 	21, 13, 5, 28, 20, 12, 4,
 }
 
-var PC2_C = []byte{
+var pc2C = []byte{
 	14, 17, 11, 24, 1, 5,
 	3, 28, 15, 6, 21, 10,
 	23, 19, 12, 4, 26, 8,
 	16, 7, 27, 20, 13, 2,
 }
-var PC2_D = []byte{
+var pc2D = []byte{
 	41, 52, 31, 37, 47, 55,
 	30, 40, 51, 45, 33, 48,
 	44, 49, 39, 56, 34, 53,
@@ -45,7 +45,7 @@ var e2 = []byte{
 	28, 29, 30, 31, 32, 1,
 }
 
-var IP = []byte{
+var ip = []byte{
 	58, 50, 42, 34, 26, 18, 10, 2,
 	60, 52, 44, 36, 28, 20, 12, 4,
 	62, 54, 46, 38, 30, 22, 14, 6,
@@ -56,7 +56,7 @@ var IP = []byte{
 	63, 55, 47, 39, 31, 23, 15, 7,
 }
 
-var FP = []byte{
+var fp = []byte{
 	40, 8, 48, 16, 56, 24, 64, 32,
 	39, 7, 47, 15, 55, 23, 63, 31,
 	38, 6, 46, 14, 54, 22, 62, 30,
@@ -67,7 +67,7 @@ var FP = []byte{
 	33, 1, 41, 9, 49, 17, 57, 25,
 }
 
-var S = [][]byte{
+var s = [][]byte{
 	[]byte{14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
 		0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8,
 		4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
@@ -102,7 +102,7 @@ var S = [][]byte{
 		2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11},
 }
 
-var P = []byte{
+var p = []byte{
 	16, 7, 20, 21, 29, 12, 28, 17,
 	1, 15, 23, 26, 5, 18, 31, 10,
 	2, 8, 24, 14, 32, 27, 3, 9,
@@ -133,8 +133,8 @@ func Crypt(key, salt string) string {
 	D := make([]byte, 28)
 
 	for i := 0; i < 28; i++ {
-		C[i] = block[PC1_C[i]-1]
-		D[i] = block[PC1_D[i]-1]
+		C[i] = block[pc1C[i]-1]
+		D[i] = block[pc1D[i]-1]
 	}
 
 	KS := make([][]byte, 16)
@@ -156,8 +156,8 @@ func Crypt(key, salt string) string {
 			D[27] = t
 		}
 		for j := 0; j < 24; j++ {
-			KS[i][j] = C[PC2_C[j]-1]
-			KS[i][j+24] = D[PC2_D[j]-28-1]
+			KS[i][j] = C[pc2C[j]-1]
+			KS[i][j+24] = D[pc2D[j]-28-1]
 		}
 	}
 
@@ -198,14 +198,14 @@ func Crypt(key, salt string) string {
 	DMY := make([]byte, 32)
 	preS := make([]byte, 48)
 	f := make([]byte, 32)
-	dmy_block := make([]byte, 64)
+	dmyBlock := make([]byte, 64)
 
 	for m := 0; m < 25; m++ {
 		for i := 0; i < 32; i++ {
-			L[i] = block[IP[i]-1]
+			L[i] = block[ip[i]-1]
 		}
 		for i := 32; i < 64; i++ {
-			R[i-32] = block[IP[i]-1]
+			R[i-32] = block[ip[i]-1]
 		}
 
 		for i := 0; i < 16; i++ {
@@ -217,7 +217,7 @@ func Crypt(key, salt string) string {
 			}
 			for j := 0; j < 8; j++ {
 				t := 6 * j
-				k := S[j][(preS[t+0]<<5)+
+				k := s[j][(preS[t+0]<<5)+
 					(preS[t+1]<<3)+
 					(preS[t+2]<<2)+
 					(preS[t+3]<<1)+
@@ -231,7 +231,7 @@ func Crypt(key, salt string) string {
 				f[t+3] = (k >> 0) & 01
 			}
 			for j := 0; j < 32; j++ {
-				R[j] = L[j] ^ f[P[j]-1]
+				R[j] = L[j] ^ f[p[j]-1]
 			}
 			for j := 0; j < 32; j++ {
 				L[j] = DMY[j]
@@ -243,13 +243,13 @@ func Crypt(key, salt string) string {
 		}
 
 		for i := 0; i < 32; i++ {
-			dmy_block[i] = L[i]
+			dmyBlock[i] = L[i]
 		}
 		for i := 32; i < 64; i++ {
-			dmy_block[i] = R[i-32]
+			dmyBlock[i] = R[i-32]
 		}
 		for i := 0; i < 64; i++ {
-			block[i] = dmy_block[FP[i]-1]
+			block[i] = dmyBlock[fp[i]-1]
 		}
 	}
 	var i int
