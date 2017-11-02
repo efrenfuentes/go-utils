@@ -5,26 +5,7 @@ package crypt
 
 import (
 	"bytes"
-	"unsafe"
 )
-
-// #cgo LDFLAGS: -lcrypt
-// #define _GNU_SOURCE
-// #include <crypt.h>
-// #include <stdlib.h>
-import "C"
-
-// Crypt generates passwords using crypt(3)
-// crypt wraps C library crypt_r
-func Crypt(key, salt string) string {
-	data := C.struct_crypt_data{}
-	ckey := C.CString(key)
-	csalt := C.CString(salt)
-	out := C.GoString(C.crypt_r(ckey, csalt, &data))
-	C.free(unsafe.Pointer(ckey))
-	C.free(unsafe.Pointer(csalt))
-	return out
-}
 
 var PC1_C = []byte{
 	57, 49, 41, 33, 25, 17, 9,
@@ -131,7 +112,7 @@ var P = []byte{
 var shift = []int{1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1}
 
 // Crypt is a implementation of crypt(3) in pure Go
-func CryptPure(key, salt string) string {
+func Crypt(key, salt string) string {
 	if sLen := len(salt); sLen < 2 {
 		src := []byte(salt)
 		for len(src) < 2 {
